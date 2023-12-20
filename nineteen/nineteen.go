@@ -179,19 +179,6 @@ func (s state) update(r rule) state {
 	return ns
 }
 
-func (s state) applyState(st state) state {
-	return state{
-		sMax: min(s.sMax, st.sMax),
-		mMax: min(s.mMax, st.mMax),
-		aMax: min(s.aMax, st.aMax),
-		xMax: min(s.xMax, st.xMax),
-		sMin: max(s.sMin, st.sMin),
-		mMin: max(s.mMin, st.mMin),
-		aMin: max(s.aMin, st.aMin),
-		xMin: max(s.xMin, st.xMin),
-	}
-}
-
 func dfsTraverse(ws map[string][]rule, current string, state state) int64 {
 	if current == Accept {
 		return state.comb()
