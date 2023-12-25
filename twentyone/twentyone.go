@@ -45,7 +45,7 @@ var (
 )
 
 func (d direction) apply(new direction) direction {
-	dd := direction{d.i + new.i, d.j + new.j, d.count + 1}
+	dd := direction{d.i + new.i, d.j + new.j, d.count - 1}
 	return dd
 }
 
@@ -62,56 +62,86 @@ func main() {
 
 	si, sj := findStart(m, 'S')
 	now := time.Now()
-	fmt.Printf("Part One %d in [%s]\n", getPlotsCount(m, direction{si, sj, 0}, 64), time.Now().Sub(now))
-
-	// Part two - Nope - TBDs
+	fmt.Printf("Part One %d in [%s]\n", getCount(m, si, sj, 64), time.Now().Sub(now))
+	now = time.Now()
+	fmt.Printf("Part Two %d in [%s]\n", getInfiniteGridCount(m, si, sj, 26501365), time.Now().Sub(now))
 }
 
 func key(i, j int) string {
 	return fmt.Sprintf("%d+%d", i, j)
 }
 
-func getPlotsCount(m [][]rune, d direction, steps int) int {
-	q := NewQueue()
+func getInfiniteGridCount(m [][]rune, si, sj, steps int) int {
+	size := len(m)
+	gridW := steps/size - 1
 
+	oddGrids := gridW * gridW
+	evenGrids := (gridW + 1) * (gridW + 1)
+
+	oddPoints := getCount(m, si, sj, 2*size+1)
+	evenPoints := getCount(m, si, sj, 2*size)
+
+	topCorner := getCount(m, size-1, sj, size-1)
+	rightCorner := getCount(m, si, 0, size-1)
+	bottomCorner := getCount(m, 0, sj, size-1)
+	leftCorner := getCount(m, si, size-1, size-1)
+
+	smallTopR := getCount(m, size-1, 0, size/2-1)
+	smallTopL := getCount(m, size-1, size-1, size/2-1)
+	smallBottomR := getCount(m, 0, 0, size/2-1)
+	smallBottomL := getCount(m, 0, size-1, size/2-1)
+
+	largeTopR := getCount(m, size-1, 0, 3*size/2-1)
+	largeTopL := getCount(m, size-1, size-1, 3*size/2-1)
+	largeBottomR := getCount(m, 0, 0, 3*size/2-1)
+	largeBottomL := getCount(m, 0, size-1, 3*size/2-1)
+
+	return oddPoints*oddGrids +
+		evenPoints*evenGrids +
+		topCorner + rightCorner + leftCorner + bottomCorner +
+		(gridW+1)*(smallTopL+smallTopR+smallBottomR+smallBottomL) +
+		gridW*(largeTopR+largeTopL+largeBottomL+largeBottomR)
+}
+
+func getCount(m [][]rune, si, sj, steps int) int {
+	q := NewQueue()
+	d := direction{si, sj, steps}
 	size := len(m) // assumes square grid
 	q.Push(d)
 
-	count := 0
-
 	visited := make(map[string]bool)
+	finalTile := make(map[string]bool)
 
 	for !q.IsEmpty() {
 		current := q.Pop()
 
-		if visited[key(current.i, current.j)] {
-			continue
-		}
-		visited[key(current.i, current.j)] = true
-
-		if current.count == steps {
-			count++
-			continue
-		}
 		if current.count%2 == 0 {
-			count++
+			finalTile[key(current.i, current.j)] = true
+		}
+
+		if current.count == 0 {
+			continue
 		}
 
 		for _, dir := range []direction{UP, DOWN, RIGHT, LEFT} {
 			newD := current.apply(dir)
-			//
-			//if newD.i < 0 || newD.j < 0 || newD.j >= size || newD.i > size {
-			//	continue
-			//}
-
-			if m[((newD.i%size)+size)%size][((newD.j%size)+size)%size] == '#' {
+			if newD.i < 0 || newD.j < 0 || newD.j >= size || newD.i >= size || visited[key(newD.i, newD.j)] {
 				continue
 			}
+
+			if m[newD.i][newD.j] == '#' {
+				continue
+			}
+
+			//if m[((newD.i%size)+size)%size][((newD.j%size)+size)%size] == '#' {
+			//	continue
+			//}
+			visited[key(newD.i, newD.j)] = true
 			q.Push(newD)
 		}
 	}
 
-	return count
+	return len(finalTile)
 }
 
 func findStart(m [][]rune, start rune) (int, int) {

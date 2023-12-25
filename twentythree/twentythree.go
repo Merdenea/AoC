@@ -132,6 +132,7 @@ func getLongestPath(m [][]rune, one bool) int {
 	}
 
 	for _, startNode := range points {
+		w
 		st := NewStack()
 		st.Push(startNode)
 		visited := make(map[string]bool)
