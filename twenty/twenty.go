@@ -156,6 +156,7 @@ func main() {
 
 	now := time.Now()
 	//fmt.Printf("Part One %d in [%s]\n", getTotalSignals(seq, 1000, false), time.Now().Sub(now))
+	//now = time.Now()
 	// state needs to be reset for part two
 	fmt.Printf("Part Two %d in [%s]\n", findMinButtonPresses(seq), time.Now().Sub(now))
 
@@ -167,6 +168,7 @@ func findMinButtonPresses(seq map[string]*module) int {
 	getTotalSignals(seq, -1, true)
 
 	min := math.MaxInt64
+	// loop is not needed since, kc is always the last so we compute the lcm for it every time
 	for path, _ := range pathsToRX {
 		// if we can get almost all periods in reasonable time, we can compute the last ones
 		// assumes we have all -1
@@ -181,11 +183,17 @@ func findMinButtonPresses(seq map[string]*module) int {
 			arr = append(arr, modulePeriod[c+"+high"])
 		}
 		lcm := LCM(1, 1, arr...)
+		fmt.Println(path, " ", lcm)
 		if lcm < min {
 			min = lcm
 		}
 	}
 	return min
+}
+
+// Find the high/low period for the first in path and compute the other ones
+func findMinButtonPressesV2(seq map[string]*module, path string) int {
+	return 0
 }
 
 func getConnections(seq map[string]*module, last string) []string {
