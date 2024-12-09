@@ -19,10 +19,12 @@ func main() {
 	}
 
 	now := time.Now()
-	fmt.Printf("Part I in [%s]: %d\n", time.Since(now).String(), partOne())
+	one := partOne()
+	fmt.Printf("Part I in [%s]: %d\n", time.Since(now).String(), one)
 
 	now = time.Now()
-	fmt.Printf("Part II in [%s]: %d\n", time.Since(now).String(), partTwo())
+	two := partTwo()
+	fmt.Printf("Part II in [%s]: %d\n", time.Since(now).String(), two)
 
 }
 
