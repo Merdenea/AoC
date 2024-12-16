@@ -13,6 +13,8 @@ type Robot struct {
 	px, py, vx, vy int64
 }
 
+var itterG = -1
+
 func main() {
 	file, _ := os.Open(fmt.Sprintf("./%s", os.Args[1]))
 	scanner := bufio.NewScanner(file)
@@ -34,8 +36,6 @@ func main() {
 		robots = append(robots, Robot{px, py, vx, vy})
 	}
 
-	fmt.Println(robots)
-
 	now := time.Now()
 	one := partOne(robots)
 	fmt.Printf("Part I in [%s]: %d\n", time.Since(now).String(), one)
@@ -54,6 +54,7 @@ func partOne(robots []Robot) int64 {
 
 	for i := 0; i < int(simTime); i++ {
 		printRobots(i, robots)
+		// for part II lol
 		for j, r := range robots {
 			nx := (r.vx + r.px)
 			ny := (r.vy + r.py)
@@ -106,8 +107,16 @@ func printRobots(itter int, r []Robot) {
 		for j := 0; j < 103; j++ {
 			if rmap[[2]int{i, j}] > 0 {
 				if i-1 >= 0 && j-1 >= 0 && i+1 < 101 && j+1 < 103 {
-					if rmap[[2]int{i - 1, j}] > 0 && rmap[[2]int{i + 1, j}] > 0 && rmap[[2]int{i, j + 1}] > 0 && rmap[[2]int{i, j - 1}] > 0 {
+					if rmap[[2]int{i - 1, j}] > 0 &&
+						rmap[[2]int{i + 1, j}] > 0 &&
+						rmap[[2]int{i, j + 1}] > 0 &&
+						rmap[[2]int{i, j - 1}] > 0 &&
+						rmap[[2]int{i + 1, j + 1}] > 0 &&
+						rmap[[2]int{i - 1, j - 1}] > 0 &&
+						rmap[[2]int{i - 1, j + 1}] > 0 &&
+						rmap[[2]int{i + 1, j - 1}] > 0 {
 						density = true
+						itterG = itter
 						break
 					}
 				}
@@ -132,5 +141,6 @@ func printRobots(itter int, r []Robot) {
 	}
 }
 func partTwo(robots []Robot) int64 {
-	return 0
+	// check the logs
+	return int64(itterG)
 }
