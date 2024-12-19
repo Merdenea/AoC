@@ -48,17 +48,17 @@ func main() {
 
 func partOne(robots []Robot) int64 {
 	bound_x, bound_y := int64(101), int64(103)
-	simTime := int64(8000)
+	simTime := 8000
 
-	q1, q2, q3, q4 := 0, 0, 0, 0
-
-	for i := 0; i < int(simTime); i++ {
+	res := 0
+	for i := 0; i < simTime; i++ {
+		if i == 100 {
+			res = getSafetyScore(robots)
+		}
 		printRobots(i, robots)
-		// for part II lol
 		for j, r := range robots {
 			nx := (r.vx + r.px)
 			ny := (r.vy + r.py)
-
 			if nx < 0 {
 				nx += bound_x
 			} else if nx >= bound_x {
@@ -74,6 +74,12 @@ func partOne(robots []Robot) int64 {
 		}
 	}
 
+	return int64(res)
+}
+
+func getSafetyScore(robots []Robot) int {
+	bound_x, bound_y := int64(101), int64(103)
+	q1, q2, q3, q4 := 0, 0, 0, 0
 	for _, r := range robots {
 		nx, ny := r.px, r.py
 		if nx < bound_x/2 && ny < bound_y/2 {
@@ -89,8 +95,7 @@ func partOne(robots []Robot) int64 {
 			q4++
 		}
 	}
-
-	return int64(q1 * q2 * q3 * q4)
+	return q1 * q2 * q3 * q4
 }
 
 func printRobots(itter int, r []Robot) {
@@ -127,20 +132,19 @@ func printRobots(itter int, r []Robot) {
 	if !density {
 		return
 	}
-	fmt.Println("itter: ", itter)
+	// fmt.Println("itter: ", itter)
 
-	for i := 0; i < 101; i++ {
-		for j := 0; j < 103; j++ {
-			if rmap[[2]int{i, j}] > 0 {
-				fmt.Print(".")
-			} else {
-				fmt.Print(" ")
-			}
-		}
-		fmt.Println()
-	}
+	// for i := 0; i < 101; i++ {
+	// 	for j := 0; j < 103; j++ {
+	// 		if rmap[[2]int{i, j}] > 0 {
+	// 			fmt.Print(".")
+	// 		} else {
+	// 			fmt.Print(" ")
+	// 		}
+	// 	}
+	// 	fmt.Println()
+	// }
 }
 func partTwo(robots []Robot) int64 {
-	// check the logs
 	return int64(itterG)
 }

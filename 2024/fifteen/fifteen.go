@@ -276,7 +276,7 @@ func partTwo(oldM [][]rune, st []rune) int64 {
 	for _, dir := range st {
 		si, sj := findStart(m) // fix this maybe
 		updatePart2(m, si, sj, dir)
-		print(m, dir)
+		// print(m, dir)
 	}
 
 	total := 0
